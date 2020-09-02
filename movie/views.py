@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from movie.models import SuspiciousUser, Rate
 from movie.serializers import RatingSerializer, SuspiciousUserSerializer
+from movie.shilling_detection import check_shilling_attack
 
 
 class SuspiciousUsers(APIView):
@@ -27,5 +28,6 @@ class MovieRating(APIView):
         serializer = RatingSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            check_shilling_attack(serializer)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

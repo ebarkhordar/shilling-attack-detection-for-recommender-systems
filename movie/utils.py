@@ -27,13 +27,17 @@ def get_optimal_chunk_size(n):
 
 def get_sample_entropy_list(df, chunk_size=5):
     sample_entropy_list = []
+    chunk_list = []
     index_list = list(chunks(range(0, len(df) + 1), chunk_size))
+    if len(index_list[-1]) < chunk_size:
+        index_list = index_list[:-1]
     for i in index_list:
         chuck = df[i[0]:i[-1]]
         rate_list = chuck['Rating'].tolist()
         HX = sample_entropy(rate_list)
         sample_entropy_list.append(HX)
-    return sample_entropy_list
+        chunk_list.append(chuck)
+    return sample_entropy_list, chunk_list
 
 
 def sample_average(rate_list):
@@ -46,13 +50,17 @@ def sample_average(rate_list):
 
 def get_sample_average_list(df, chunk_size=5):
     sample_entropy_list = []
+    chunk_list = []
     index_list = list(chunks(range(0, len(df) + 1), chunk_size))
+    if len(index_list[-1]) < chunk_size:
+        index_list = index_list[:-1]
     for i in index_list:
         chuck = df[i[0]:i[-1]]
         rate_list = chuck['Rating'].tolist()
         MX = sample_average(rate_list)
         sample_entropy_list.append(MX)
-    return sample_entropy_list
+        chunk_list.append(chuck)
+    return sample_entropy_list, chunk_list
 
 
 def z_score_entropy_plot(sample_entropy_list):
@@ -62,6 +70,7 @@ def z_score_entropy_plot(sample_entropy_list):
     plt.legend(["sample entropy"])
     plt.xlabel('window index', fontsize=12)
     plt.ylabel('z-score', fontsize=12)
+    plt.show()
 
 
 def optimum_chunk_size(df_attacked_movie):
